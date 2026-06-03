@@ -18,11 +18,7 @@ Because the container hosts its own internal virtual display desktop stream, you
 ### Run via Linux / macOS / Windows PowerShell
 
 ```bash
-docker run -d --rm \
-  -p 8080:8080 \
-  -v ${HOME}/Downloads:/app/downloads \
-  mrmoskal/youtube-downloader:latest
-
+docker run -d --rm -p 8080:8080 -v ${HOME}/Downloads:/app/downloads mrmoskal/youtube-downloader:latest
 ```
 
 ### 🖥️ How to Access the App

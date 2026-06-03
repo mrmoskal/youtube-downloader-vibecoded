@@ -26,11 +26,7 @@ The pre-built, vulnerability-free container image is hosted directly on Docker H
 ### Deploy with One Command
 
 ```bash
-docker run -d --rm \
-  -p 8080:8080 \
-  -v ${HOME}/Downloads:/app/downloads \
-  mrmoskal/youtube-downloader:latest
-
+docker run -d --rm -p 8080:8080 -v ${HOME}/Downloads:/app/downloads mrmoskal/youtube-downloader:latest
 ```
 
 _Once running, navigate to **`http://localhost:8080/vnc.html`** in any browser and press **Connect**._
