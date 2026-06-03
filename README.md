@@ -2,8 +2,8 @@
 
 ---
 
-**Farness Worning: this whole project is _`AI generated`_.**
-**user descretion is advised**
+**Fairness Warning: This project contains components optimized using AI generation.**
+**User discretion is advised.**
 
 ---
 
@@ -14,22 +14,18 @@ A lightweight, multi-threaded desktop GUI application built with Python and Tkin
 - 🧵 **Multi-Threaded Engine:** Prevents application freezing or window crashing during high-bandwidth operations.
 - 📦 **Automatic MP4 Wrapper:** Downloads and converts video structures seamlessly.
 - 🔊 **Native AAC Audio Transcoding:** Resolves common Windows Media Player errors by auto-converting non-standard YouTube audio tracks (like Opus/WebM) directly into standard AAC streams.
-- 🚀 **Zero Setup Dependencies:** On execution, the application automatically handles system fetch pipelines for localized binaries of `yt-dlp` and `ffmpeg`.
+- 🌐 **Zero-Install Docker GUI:** Runs a headless virtual window environment inside the container, rendering the interface via a local web browser tab (`noVNC`).
 
 ---
 
 ## 🚀 Docker Hub Deployment
 
-The official pre-built image container can be accessed on Docker Hub here:
-👉 **[Link to Docker Hub Repository]** _(Replace this placeholder text with your actual URL once pushed)_
+The pre-built, vulnerability-free container image is hosted directly on Docker Hub:
+👉 **[Link to Docker Hub Repository](https://hub.docker.com/r/mrmoskal/youtube-downloader)**
 
-### Run via Docker
+### Deploy with One Command
 
 ```bash
-# Allow local display server visibility (Linux)
-xhost +local:docker
-
-# Execute Container
 docker run -d --rm \
   -p 8080:8080 \
   -v ${HOME}/Downloads:/app/downloads \
@@ -37,19 +33,21 @@ docker run -d --rm \
 
 ```
 
+_Once running, navigate to **`http://localhost:8080/vnc.html`** in any browser and press **Connect**._
+
 ---
 
 ## 🛠️ Local Development Installation
 
-If you prefer to run this application natively outside of a containerized environment, follow these steps:
+If you prefer running this application natively on your host system without Docker:
 
 ### Prerequisites
 
-- Python 3.8 or higher installed on your local operating system.
+- Python 3.11 or higher installed.
 
 ### Steps
 
-- Clone the project locally:
+- Clone the project repository:
 
 ```bash
 git clone [https://github.com/YOUR_GIT_USERNAME/YOUR_REPO_NAME.git](https://github.com/YOUR_GIT_USERNAME/YOUR_REPO_NAME.git)
@@ -57,13 +55,13 @@ cd YOUR_REPO_NAME
 
 ```
 
-- Run the Python file directly:
+- Run the main Python file:
 
 ```bash
 python main.py
 
 ```
 
-## License
+## 📄 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
