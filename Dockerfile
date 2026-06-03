@@ -31,7 +31,7 @@ COPY . /app
 EXPOSE 8080
 
 # Create an execution script inside the container to handle the display environment
-# FIXED: Replaced /usr/share/novnc/utils/launch.sh with the correct 'novnc_proxy' system binary
+# FIXED: Using the explicit absolute system path for the noVNC web proxy engine
 RUN echo '#!/bin/bash\n\
 Xvfb :1 -screen 0 800x600x24 &\n\
 export DISPLAY=:1\n\
@@ -40,7 +40,7 @@ fluxbox &\n\
 sleep 1\n\
 x11vnc -display :1 -nopw -listen localhost -forever &\n\
 sleep 1\n\
-novnc_proxy --vnc localhost:5900 --listen 8080 &\n\
+/usr/share/novnc/utils/novnc_proxy --vnc localhost:5900 --listen 8080 &\n\
 sleep 1\n\
 python main.py\n\
 wait' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
