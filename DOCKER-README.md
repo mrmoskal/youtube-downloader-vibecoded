@@ -15,10 +15,10 @@ The container automatically handles system fetch pipelines for localized binarie
 
 Because the container hosts its own internal virtual display desktop stream, you only need to forward a standard network port (`8080`) to interact with the application.
 
-### Run via Linux / macOS / Windows PowerShell
+### Run via Windows PowerShell
 
 ```bash
-docker run -d --rm -p 8080:8080 -v ${HOME}/Downloads:/app/downloads mrmoskal/youtube-downloader:latest
+docker run -d --rm -p 8080:8080 -v "C:\Users\$env:USERNAME\Downloads:/app/downloads" mrmoskal/youtube-downloader:latest
 ```
 
 ### 🖥️ How to Access the App
@@ -31,4 +31,4 @@ The application GUI will appear right inside your browser window!
 
 ## 💾 Volumes & Persistent Storage
 
-By utilizing the `-v ${HOME}/Downloads:/app/downloads` flag, the application maps its internal target path directly to your host machine's physical `Downloads` folder. All processed MP4 clips will permanently save straight to your machine instead of vanishing when the container finishes running.
+By utilizing the `-v "C:\Users\$env:USERNAME\Downloads:/app/downloads"` flag, the application maps its internal target path directly to your host machine's physical `Downloads` folder. All processed MP4 clips will permanently save straight to your machine instead of vanishing when the container finishes running.
