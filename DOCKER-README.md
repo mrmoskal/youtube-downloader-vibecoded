@@ -1,46 +1,38 @@
-# YouTube Unlisted Video Downloader (GUI)
+# YouTube Unlisted Video Downloader (GUI via Web Browser)
 
 ---
 
-**Farness Worning: this whole project is _`AI generated`_.**
-**user descretion is advised**
+**Fairness Warning: This project contains components optimized using AI generation.**
+**User discretion is advised.**
 
 ---
 
-A Python-based Tkinter desktop application that automates batch downloading unlisted or public YouTube videos. The containerized application automatically syncs the latest backend extraction tools (`yt-dlp`) and multimedia cross-compilers (`ffmpeg`), natively transcoding files directly into fully compatible MP4 assets with working AAC audio streams.
+A Python-based Tkinter desktop application that automates batch downloading unlisted or public YouTube videos. This containerized build features a self-contained virtual framing engine (`noVNC` & `Xvfb`). It streams the visual application interface directly to your favorite web browser—requiring **zero external X-server apps, configurations, or installations** on your host operating system.
 
-## Quick Start (Running the GUI from Docker)
+The container automatically handles system fetch pipelines for localized binaries of `yt-dlp` and `ffmpeg`, natively transcoding streams directly into fully compatible MP4 files with functioning AAC audio tracks.
 
-Because this is a graphical user interface (GUI) application, you must allow the container access to your host machine's display server.
+## 🚀 Quick Start (No Setup Required)
 
-### For Linux Users
+Because the container hosts its own internal virtual display desktop stream, you only need to forward a standard network port (`8080`) to interact with the application.
 
-Allow local connections to the X server and run the container:
+### Run via Linux / macOS / Windows PowerShell
 
 ```bash
-xhost +local:docker
-docker run -it --rm \
-  -e DISPLAY=$DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -v ~/Downloads:/app/downloads \
-  YOUR_DOCKERHUB_USERNAME/youtube-downloader:latest
+docker run -d --rm \
+  -p 8080:8080 \
+  -v ${HOME}/Downloads:/app/downloads \
+  mrmoskal/youtube-downloader:latest
 
 ```
 
-### For Windows Users
+### 🖥️ How to Access the App
 
-1. Install an X-Server utility such as **VcXsrv** (XLaunch) or **Xming**.
-2. Start the X-Server with **Disable access control** checked.
-3. Find your local IPv4 address and run in PowerShell:
+1. Open your web browser (Chrome, Edge, Firefox, etc.).
+2. Navigate to: **`http://localhost:8080/vnc.html`**
+3. Click the blue **Connect** button.
 
-```powershell
-docker run -it --rm `
-  -e DISPLAY=YOUR_IP_ADDRESS:0.0 `
-  -v ${HOME}/Downloads:/app/downloads `
-  YOUR_DOCKERHUB_USERNAME/youtube-downloader:latest
+The application GUI will appear right inside your browser window!
 
-```
+## 💾 Volumes & Persistent Storage
 
-## Volumes & Storage
-
-Make sure to bind your preferred download destination using the `-v` flag (as shown above) so that your downloaded MP4 files are saved directly onto your host computer's hard drive instead of disappearing when the container closes.
+By utilizing the `-v ${HOME}/Downloads:/app/downloads` flag, the application maps its internal target path directly to your host machine's physical `Downloads` folder. All processed MP4 clips will permanently save straight to your machine instead of vanishing when the container finishes running.

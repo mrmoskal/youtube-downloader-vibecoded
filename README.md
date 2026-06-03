@@ -30,11 +30,10 @@ The official pre-built image container can be accessed on Docker Hub here:
 xhost +local:docker
 
 # Execute Container
-docker run -it --rm \
-  -e DISPLAY=$DISPLAY \
-  -v /tmp/.X11-unix:/tmp/.X11-unix \
-  -v ~/Downloads:/app/downloads \
-  YOUR_DOCKERHUB_USERNAME/youtube-downloader:latest
+docker run -d --rm \
+  -p 8080:8080 \
+  -v ${HOME}/Downloads:/app/downloads \
+  mrmoskal/youtube-downloader:latest
 
 ```
 
