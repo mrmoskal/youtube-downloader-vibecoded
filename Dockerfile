@@ -4,15 +4,16 @@ FROM ubuntu:24.04
 # Prevent interactive prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Update, upgrade all system libraries to clear base CVEs, and install requirements
+# Install system utilities, X11 virtual frame buffer, and web streaming tools
 RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     python3.12 \
     python3-pip \
     python3-tk \
-    libx11-6 \
-    libxext6 \
-    libxrender1 \
-    libxtst6 \
+    xvfb \
+    x11vnc \
+    fluxbox \
+    novnc \
+    websockify \
     curl \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
@@ -26,9 +27,23 @@ WORKDIR /app
 # Copy application files (respecting the .dockerignore file)
 COPY . /app
 
-# FIX: If you have an external requirements.txt, this installs dependencies safely.
-# If your code relies completely on built-in libraries, this line can safely be removed.
-RUN if [ -f requirements.txt ]; then python -m pip install --no-cache-dir --break-system-packages -r requirements.txt; fi
+# Expose the web browser connection port
+EXPOSE 8080
 
-# Run the application
-CMD ["python", "main.py"]
+# Create an execution script inside the container to handle the display environment
+# FIXED: Replaced /usr/share/novnc/utils/launch.sh with the correct 'novnc_proxy' system binary
+RUN echo '#!/bin/bash\n\
+Xvfb :1 -screen 0 800x600x24 &\n\
+export DISPLAY=:1\n\
+sleep 1\n\
+fluxbox &\n\
+sleep 1\n\
+x11vnc -display :1 -nopw -listen localhost -forever &\n\
+sleep 1\n\
+novnc_proxy --vnc localhost:5900 --listen 8080 &\n\
+sleep 1\n\
+python main.py\n\
+wait' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
+# Launch the virtual desktop pipeline
+CMD ["/app/entrypoint.sh"]

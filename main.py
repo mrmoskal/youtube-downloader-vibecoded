@@ -6,6 +6,7 @@ import subprocess
 import urllib.request
 import tempfile
 import zipfile
+import tarfile  # Added to extract Linux ffmpeg builds
 
 
 class UltimateYoutubeDownloaderGUI:
@@ -91,17 +92,18 @@ class UltimateYoutubeDownloaderGUI:
             print(f"Failed to fetch downloader binary: {e}")
             return None, temp_dir
 
-        if os.name == "nt":
-            ffmpeg_exe = os.path.join(temp_dir, "ffmpeg.exe")
-            ffprobe_exe = os.path.join(temp_dir, "ffprobe.exe")
+        # FIXED FOR DOCKER: Ensure ffmpeg downloads on Linux too!
+        ffmpeg_exe = os.path.join(temp_dir, "ffmpeg.exe" if os.name == "nt" else "ffmpeg")
+        ffprobe_exe = os.path.join(temp_dir, "ffprobe.exe" if os.name == "nt" else "ffprobe")
 
-            if not os.path.exists(ffmpeg_exe):
-                self.status_label.config(text="Status: Downloading automatic audio/video merger tool...")
-                self.root.update_idletasks()
+        if not os.path.exists(ffmpeg_exe):
+            self.status_label.config(text="Status: Downloading automatic audio/video merger tool...")
+            self.root.update_idletasks()
 
+            if os.name == "nt":
+                # Windows Download Pipeline
                 ffmpeg_url = "https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip"
                 zip_path = os.path.join(temp_dir, "ffmpeg.zip")
-
                 try:
                     urllib.request.urlretrieve(ffmpeg_url, zip_path)
                     with zipfile.ZipFile(zip_path, 'r') as zip_ref:
@@ -114,7 +116,26 @@ class UltimateYoutubeDownloaderGUI:
                                     f.write(zip_ref.read(file))
                     os.remove(zip_path)
                 except Exception as e:
-                    print(f"Automatic ffmpeg integration skipped: {e}")
+                    print(f"Automatic Windows ffmpeg integration skipped: {e}")
+            else:
+                # Linux / Docker Download Pipeline
+                ffmpeg_url = "https://github.com/yt-dlp/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz"
+                tar_path = os.path.join(temp_dir, "ffmpeg.tar.xz")
+                try:
+                    urllib.request.urlretrieve(ffmpeg_url, tar_path)
+                    with tarfile.open(tar_path, "r:xz") as tar_ref:
+                        for member in tar_ref.getmembers():
+                            if member.name.endswith("/ffmpeg"):
+                                member.name = os.path.basename(member.name)
+                                tar_ref.extract(member, path=temp_dir)
+                            elif member.name.endswith("/ffprobe"):
+                                member.name = os.path.basename(member.name)
+                                tar_ref.extract(member, path=temp_dir)
+                    os.chmod(ffmpeg_exe, 0o755)
+                    os.chmod(ffprobe_exe, 0o755)
+                    os.remove(tar_path)
+                except Exception as e:
+                    print(f"Automatic Linux ffmpeg integration skipped: {e}")
 
         return binary_path, temp_dir
 
@@ -135,7 +156,6 @@ class UltimateYoutubeDownloaderGUI:
             self.progress_bar['value'] = (index - 1) / total_videos * 100
             self.root.update_idletasks()
 
-            # FIXED PARAMETER WRAPPING: Back to standard single '%' symbols
             output_template = os.path.join(save_dir, "%(title)s.%(ext)s")
 
             cmd = [
@@ -154,8 +174,6 @@ class UltimateYoutubeDownloaderGUI:
             try:
                 self.status_label.config(text="Status: Downloading and merging video tracks...")
                 self.root.update_idletasks()
-
-                # FIXED: Dropping 'shell=True' prevents Windows CMD from altering the % strings
                 subprocess.run(cmd, check=True)
             except Exception as e:
                 print(f"Failed to download {url}: {e}")
